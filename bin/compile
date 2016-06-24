@@ -32,8 +32,8 @@ while read PATTERN; do
      || "${PATTERN/\{/}" != "${PATTERN}" ]]
   then
     # wildcard matching - this works only because we've overridden IFS
+    echo "-----> Scanning glob pattern: '${PATTERN}'"
     for FILENAME in ${PATTERN}; do
-      echo "-----> Scanning glob pattern: '${PATTERN}'"
       if [[ -d "${FILENAME}" ]]; then
         echo "       Removing directory '${FILENAME}' from slug (glob: '${PATTERN}')"
         rm -rf "${FILENAME}"
