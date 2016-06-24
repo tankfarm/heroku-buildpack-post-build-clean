@@ -35,21 +35,21 @@ while read PATTERN; do
     echo "-----> Scanning glob pattern: '${PATTERN}'"
     for FILENAME in ${PATTERN}; do
       if [[ -d "${FILENAME}" ]]; then
-        echo "       Removing directory '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing directory '${FILENAME}' from slug"
         rm -rf "${FILENAME}"
         continue
       elif [[ -f "${FILENAME}" ]]; then
-        echo "       Removing file '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing file '${FILENAME}' from slug"
       elif [[ -p "${FILENAME}" ]]; then
-        echo "       Removing pipe '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing pipe '${FILENAME}' from slug"
       elif [[ -h "${FILENAME}" ]]; then
-        echo "       Removing symlink '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing symlink '${FILENAME}' from slug"
       elif [[ -S "${FILENAME}" ]]; then
-        echo "       Removing socket '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing socket '${FILENAME}' from slug"
       elif [[ -e "${FILENAME}" ]]; then
-        echo "       Removing misc file entity '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing misc file entity '${FILENAME}' from slug"
       elif [[ "${FILENAME}" == "${PATTERN}" ]]; then
-        echo "       Glob '${PATTERN}' has no matches - ignoring"
+        echo "       No matches found for glob - ignoring"
         continue
       fi
       rm -f "${FILENAME}"
