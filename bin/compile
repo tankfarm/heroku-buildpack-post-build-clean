@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+IFS="$(printf '\n\t')"
 
 readonly BUILD_DIR=$1
-readonly CLEAN_FILES=.slug-post-clean
+readonly CLEAN_FILES=".slug-post-clean"
 
 if [[ ! -n "${BUILD_DIR}" ]]; then
   echo "No build directory specified - exiting" >&2
@@ -17,16 +18,63 @@ if [[ ! -f "${CLEAN_FILES}" ]]; then
   exit 1
 fi
 
-while read file; do
-  [[ ! -n "${file}" ]] && continue
+while read PATTERN; do
 
-  if [[ -f "${file}" ]]; then
-    echo "Removing file ${file} from slug"
-    rm -f ${file}
-  elif [[ -d "${file}" ]]; then
-    echo "Removing directory ${file} from slug"
-    rm -rf ${file}
-  else
-    echo "Location ${file} not found - ignoring"
+  if [[ "${PATTERN}" == "" || "${PATTERN:0:1}" == "#" ]]
+  then
+    # empty string or comment
+    continue
   fi
+  
+  if [[ "${PATTERN/\*/}" == "${PATTERN}" 
+     && "${PATTERN/\?/}" == "${PATTERN}" 
+     && "${PATTERN/\[/}" == "${PATTERN}" 
+     && "${PATTERN/\{/}" == "${PATTERN}" ]]; 
+  then
+    # wildcard matching - this works only because we've overridden IFS
+    for FILENAME in PATTERN; do
+      if [[ -d "${FILENAME}" ]]; then
+        echo "Removing directory '${FILENAME}' from slug (glob: '${PATTERN}')"
+        rm -rf "${FILENAME}"
+        continue
+      elif [[ -f "${FILENAME}" ]]; then
+        echo "Removing file '${FILENAME}' from slug (glob: '${PATTERN}')"
+      elif [[ -p "${FILENAME}" ]]; then
+        echo "Removing pipe '${FILENAME}' from slug (glob: '${PATTERN}')"
+      elif [[ -h "${FILENAME}" ]]; then
+        echo "Removing symlink '${FILENAME}' from slug (glob: '${PATTERN}')"
+      elif [[ -S "${FILENAME}" ]]; then
+        echo "Removing socket '${FILENAME}' from slug (glob: '${PATTERN}')"
+      elif [[ -e "${FILENAME}" ]]; then
+        echo "Removing misc file entity '${FILENAME}' from slug (glob: '${PATTERN}')"
+      elif [[ "${FILENAME}" == "${PATTERN}" ]]
+        echo "Glob '${PATTERN}' has no matches - ignoring"
+        continue
+      fi
+      rm -f "${FILENAME}""
+    done
+  else
+    # literal matching
+    FILENAME="${PATTERN}"
+    if [[ -d "${FILENAME}" ]]; then
+      echo "Removing directory '${FILENAME}' from slug"
+      rm -rf "${FILENAME}"
+      continue
+    elif [[ -f "${FILENAME}" ]]; then
+      echo "Removing file '${FILENAME}' from slug"
+    elif [[ -p "${FILENAME}" ]]; then
+      echo "Removing pipe '${FILENAME}' from slug"
+    elif [[ -h "${FILENAME}" ]]; then
+      echo "Removing symlink '${FILENAME}' from slug"
+    elif [[ -S "${FILENAME}" ]]; then
+      echo "Removing socket '${FILENAME}' from slug"
+    elif [[ -e "${FILENAME}" ]]; then
+      echo "Removing misc file entity '${FILENAME}' from slug"
+    else
+      echo "Location '${FILENAME}' not found - ignoring"
+      continue
+    fi
+    rm -f "${FILENAME}"
+  fi
+
 done <${CLEAN_FILES}
