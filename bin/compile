@@ -47,7 +47,7 @@ while read PATTERN; do
         echo "Removing socket '${FILENAME}' from slug (glob: '${PATTERN}')"
       elif [[ -e "${FILENAME}" ]]; then
         echo "Removing misc file entity '${FILENAME}' from slug (glob: '${PATTERN}')"
-      elif [[ "${FILENAME}" == "${PATTERN}" ]]
+      elif [[ "${FILENAME}" == "${PATTERN}" ]]; then
         echo "Glob '${PATTERN}' has no matches - ignoring"
         continue
       fi
