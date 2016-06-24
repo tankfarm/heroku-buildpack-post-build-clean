@@ -33,14 +33,14 @@ while read PATTERN; do
     continue
   fi
   
-  if [[ "${PATTERN/\*/}" == "${PATTERN}" 
-     && "${PATTERN/\?/}" == "${PATTERN}" 
-     && "${PATTERN/\[/}" == "${PATTERN}" 
-     && "${PATTERN/\{/}" == "${PATTERN}" ]]
+  if [[ "${PATTERN/\*/}" != "${PATTERN}" 
+     || "${PATTERN/\?/}" != "${PATTERN}" 
+     || "${PATTERN/\[/}" != "${PATTERN}" 
+     || "${PATTERN/\{/}" != "${PATTERN}" ]]
   then
     echo "-----> ======== WILDARD DETECTED"
     # wildcard matching - this works only because we've overridden IFS
-    for FILENAME in PATTERN; do
+    for FILENAME in ${PATTERN}; do
       echo "-----> -------- FILENAME: ${FILENAME}"
       if [[ -d "${FILENAME}" ]]; then
         echo "Removing directory '${FILENAME}' from slug (glob: '${PATTERN}')"
