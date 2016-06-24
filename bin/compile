@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "-----> ######## START"
+
 set -euo pipefail
 IFS="$(printf '\n\t')"
 
@@ -18,7 +20,11 @@ if [[ ! -f "${CLEAN_FILES}" ]]; then
   exit 1
 fi
 
+echo "-----> ######## LOOP"
+
 while read PATTERN; do
+
+  echo "-----> @@@@@@@@ PATTERN: ${PATTERN}"
 
   if [[ "${PATTERN}" == "" || "${PATTERN:0:1}" == "#" ]]
   then
@@ -29,10 +35,12 @@ while read PATTERN; do
   if [[ "${PATTERN/\*/}" == "${PATTERN}" 
      && "${PATTERN/\?/}" == "${PATTERN}" 
      && "${PATTERN/\[/}" == "${PATTERN}" 
-     && "${PATTERN/\{/}" == "${PATTERN}" ]]; 
+     && "${PATTERN/\{/}" == "${PATTERN}" ]]
   then
+    echo "-----> ======== WILDARD DETECTED"
     # wildcard matching - this works only because we've overridden IFS
     for FILENAME in PATTERN; do
+      echo "-----> -------- FILENAME: ${FILENAME}"
       if [[ -d "${FILENAME}" ]]; then
         echo "Removing directory '${FILENAME}' from slug (glob: '${PATTERN}')"
         rm -rf "${FILENAME}"
@@ -56,6 +64,7 @@ while read PATTERN; do
   else
     # literal matching
     FILENAME="${PATTERN}"
+    echo "-----> ======== LITERAL DETECTED"
     if [[ -d "${FILENAME}" ]]; then
       echo "Removing directory '${FILENAME}' from slug"
       rm -rf "${FILENAME}"
@@ -78,3 +87,6 @@ while read PATTERN; do
   fi
 
 done <${CLEAN_FILES}
+
+echo "-----> ######## DONE"
+exit 0
