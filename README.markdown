@@ -36,14 +36,16 @@ https://github.com/heroku/heroku-buildpack-ruby
 https://github.com/Lostmyname/heroku-post-build-clean-buildpack
 ```
 
-The `.slug-post-clean` file supports single-file and single-directory
-declarations only, e.g.:
+The `.slug-post-clean` file supports a single declatation per line.
+A declaration can include bash globs (`*` and `?` wildcards, `[]` classes,
+and `{}` groups), whitespace in the filename, comments starting with `#`.
+Regular files, directories, symlinks, sockets, etc can all be removed.
 
 ```
 some_huge_file.psd
 some/nested/directory
 why_does_this_app_even_contain_a.tiff
+a file with whitespace.txt
+# declaration below removes all *.log and *.out files/dirs
+*.{log,out}
 ```
-
-I might expand it to support file globs, but for the moment it's not
-necessary and the testing implications give me the willies.
