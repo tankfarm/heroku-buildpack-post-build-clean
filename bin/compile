@@ -29,6 +29,7 @@ while read PATTERN; do
   if [[ "${PATTERN}" == "" || "${PATTERN:0:1}" == "#" ]]
   then
     # empty string or comment
+    echo "-----> ======== ignoring"
     continue
   fi
   
