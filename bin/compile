@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo "-----> ######## START"
-
 set -euo pipefail
 IFS="$(printf '\n\t')"
 
@@ -20,16 +18,11 @@ if [[ ! -f "${CLEAN_FILES}" ]]; then
   exit 1
 fi
 
-echo "-----> ######## LOOP"
-
 while read PATTERN; do
-
-  echo "-----> @@@@@@@@ PATTERN: ${PATTERN}"
 
   if [[ "${PATTERN}" == "" || "${PATTERN:0:1}" == "#" ]]
   then
     # empty string or comment
-    echo "-----> ======== ignoring"
     continue
   fi
   
@@ -38,26 +31,25 @@ while read PATTERN; do
      || "${PATTERN/\[/}" != "${PATTERN}" 
      || "${PATTERN/\{/}" != "${PATTERN}" ]]
   then
-    echo "-----> ======== WILDARD DETECTED"
     # wildcard matching - this works only because we've overridden IFS
     for FILENAME in ${PATTERN}; do
-      echo "-----> -------- FILENAME: ${FILENAME}"
+      echo "-----> Scanning glob pattern: '${PATTERN}'"
       if [[ -d "${FILENAME}" ]]; then
-        echo "Removing directory '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing directory '${FILENAME}' from slug (glob: '${PATTERN}')"
         rm -rf "${FILENAME}"
         continue
       elif [[ -f "${FILENAME}" ]]; then
-        echo "Removing file '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing file '${FILENAME}' from slug (glob: '${PATTERN}')"
       elif [[ -p "${FILENAME}" ]]; then
-        echo "Removing pipe '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing pipe '${FILENAME}' from slug (glob: '${PATTERN}')"
       elif [[ -h "${FILENAME}" ]]; then
-        echo "Removing symlink '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing symlink '${FILENAME}' from slug (glob: '${PATTERN}')"
       elif [[ -S "${FILENAME}" ]]; then
-        echo "Removing socket '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing socket '${FILENAME}' from slug (glob: '${PATTERN}')"
       elif [[ -e "${FILENAME}" ]]; then
-        echo "Removing misc file entity '${FILENAME}' from slug (glob: '${PATTERN}')"
+        echo "       Removing misc file entity '${FILENAME}' from slug (glob: '${PATTERN}')"
       elif [[ "${FILENAME}" == "${PATTERN}" ]]; then
-        echo "Glob '${PATTERN}' has no matches - ignoring"
+        echo "       Glob '${PATTERN}' has no matches - ignoring"
         continue
       fi
       rm -f "${FILENAME}"
@@ -65,23 +57,22 @@ while read PATTERN; do
   else
     # literal matching
     FILENAME="${PATTERN}"
-    echo "-----> ======== LITERAL DETECTED"
     if [[ -d "${FILENAME}" ]]; then
-      echo "Removing directory '${FILENAME}' from slug"
+      echo "-----> Removing directory '${FILENAME}' from slug"
       rm -rf "${FILENAME}"
       continue
     elif [[ -f "${FILENAME}" ]]; then
-      echo "Removing file '${FILENAME}' from slug"
+      echo "-----> Removing file '${FILENAME}' from slug"
     elif [[ -p "${FILENAME}" ]]; then
-      echo "Removing pipe '${FILENAME}' from slug"
+      echo "-----> Removing pipe '${FILENAME}' from slug"
     elif [[ -h "${FILENAME}" ]]; then
-      echo "Removing symlink '${FILENAME}' from slug"
+      echo "-----> Removing symlink '${FILENAME}' from slug"
     elif [[ -S "${FILENAME}" ]]; then
-      echo "Removing socket '${FILENAME}' from slug"
+      echo "-----> Removing socket '${FILENAME}' from slug"
     elif [[ -e "${FILENAME}" ]]; then
-      echo "Removing misc file entity '${FILENAME}' from slug"
+      echo "-----> Removing misc file entity '${FILENAME}' from slug"
     else
-      echo "Location '${FILENAME}' not found - ignoring"
+      echo "-----> Location '${FILENAME}' not found - ignoring"
       continue
     fi
     rm -f "${FILENAME}"
@@ -89,5 +80,4 @@ while read PATTERN; do
 
 done <${CLEAN_FILES}
 
-echo "-----> ######## DONE"
 exit 0
