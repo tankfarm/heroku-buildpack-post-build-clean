@@ -51,7 +51,7 @@ while read PATTERN; do
         echo "Glob '${PATTERN}' has no matches - ignoring"
         continue
       fi
-      rm -f "${FILENAME}""
+      rm -f "${FILENAME}"
     done
   else
     # literal matching
