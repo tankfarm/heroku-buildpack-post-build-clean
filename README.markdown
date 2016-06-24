@@ -37,8 +37,8 @@ https://github.com/Lostmyname/heroku-post-build-clean-buildpack
 ```
 
 The `.slug-post-clean` file supports a single declatation per line.
-A declaration can include bash globs (`*` and `?` wildcards, `[]` classes,
-and `{}` groups), whitespace in the filename, comments starting with `#`.
+A declaration can include bash globs (`*` and `?` wildcards, and `[]`
+classes), whitespace in the filename, comments starting with `#`.
 Regular files, directories, symlinks, sockets, etc can all be removed.
 
 ```
@@ -47,5 +47,7 @@ some/nested/directory
 why_does_this_app_even_contain_a.tiff
 a file with whitespace.txt
 # declaration below removes all *.log and *.out files/dirs
-*.{log,out}
+*.log
+# declaration below removes all logfile?.txt files, except logfile0.txt
+logfile[^0].txt
 ```
