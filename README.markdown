@@ -26,7 +26,7 @@ part of the slug.
 Add the buildpack to the app:
 
 ```shell
-heroku buildpacks:add https://github.com/opencounter/heroku-buildpack-post-build-clean.git
+heroku buildpacks:add https://github.com/tankfarm/heroku-buildpack-post-build-clean.git
 ```
 
 The post-build-clean buildpack **must** be last in the buildpack order.
