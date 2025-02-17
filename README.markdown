@@ -35,7 +35,7 @@ The post-build-clean buildpack **must** be last in the buildpack order.
 # .buildpacks
 https://github.com/heroku/heroku-buildpack-nodejs
 https://github.com/heroku/heroku-buildpack-ruby
-https://github.com/opencounter/heroku-buildpack-post-build-clean
+https://github.com/tankfarm/heroku-buildpack-post-build-clean
 ```
 
 The `.slug-post-clean` file supports a single declatation per line.
